@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// struct do produto
+
 typedef struct {
     int codigo;
     char *nome;
@@ -10,7 +10,7 @@ typedef struct {
     int quantidade;
 } Produto;
 
-// protótipos
+
 void adicionar_produto(Produto **estoque, int *total, int *proximoCodigo);
 void listar_produtos(Produto *estoque, int total);
 Produto* buscar_produto(Produto *estoque, int total, int codigo);
@@ -39,7 +39,7 @@ int main() {
 
         if (scanf("%d", &opcao) != 1) {
             limpar_buffer();
-            opcao = -1; // opcao invalida se o usuario digitar letra
+            opcao = -1; 
         }
 
         switch (opcao) {
@@ -95,7 +95,7 @@ int main() {
     return 0;
 }
 
-// tira o \n que fica sobrando no buffer depois do scanf de numero
+
 void limpar_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -115,9 +115,9 @@ void adicionar_produto(Produto **estoque, int *total, int *proximoCodigo) {
     limpar_buffer();
     printf("Nome: ");
     fgets(nomeDigitado, sizeof(nomeDigitado), stdin);
-    nomeDigitado[strcspn(nomeDigitado, "\n")] = '\0'; // fgets pega o \n junto, entao tiro ele aqui
+    nomeDigitado[strcspn(nomeDigitado, "\n")] = '\0'; 
 
-    // aloca so o espaco necessario pro nome (+1 do \0)
+  
     (*estoque)[*total].nome = malloc(strlen(nomeDigitado) + 1);
     if ((*estoque)[*total].nome == NULL) {
         printf("Nao foi possivel alocar memoria pro nome.\n");
@@ -165,7 +165,7 @@ void listar_produtos(Produto *estoque, int total) {
     printf("Valor total do estoque: R$ %.2f\n", valorTotal);
 }
 
-// devolve o endereco do produto, ou NULL se nao achar
+
 Produto* buscar_produto(Produto *estoque, int total, int codigo) {
     for (int i = 0; i < total; i++) {
         if (estoque[i].codigo == codigo) {
@@ -176,7 +176,7 @@ Produto* buscar_produto(Produto *estoque, int total, int codigo) {
 }
 
 void atualizar_estoque(Produto *estoque, int total, int codigo) {
-    // usa a busca pra achar o produto, e mexe direto nele (passagem por referencia via ponteiro)
+    
     Produto *p = buscar_produto(estoque, total, codigo);
 
     if (p == NULL) {
@@ -207,10 +207,10 @@ void remover_produto(Produto **estoque, int *total, int codigo) {
 
     printf("Produto \"%s\" removido", (*estoque)[indice].nome);
 
-    // libera o nome ANTES de mexer no vetor, senao perde a referencia e vaza memoria
+   
     free((*estoque)[indice].nome);
 
-    // desloca tudo que vem depois uma posicao pra esquerda, cobrindo o buraco
+   
     for (int i = indice; i < *total - 1; i++) {
         (*estoque)[i] = (*estoque)[i + 1];
     }
@@ -225,20 +225,20 @@ void remover_produto(Produto **estoque, int *total, int codigo) {
         if (tmp != NULL) {
             *estoque = tmp;
         }
-        // se realloc falhar aqui, o vetor continua do tamanho antigo mas funcional
+      
     }
 }
 
 void liberar_memoria(Produto **estoque, int *total) {
     printf("\nLiberando memoria\n");
 
-    // primeiro libera cada nome, que foi alocado separado
+
     for (int i = 0; i < *total; i++) {
         printf("Memoria do produto \"%s\" liberada\n", (*estoque)[i].nome);
         free((*estoque)[i].nome);
     }
 
-    // so depois libera o vetor em si
+    
     if (*estoque != NULL) {
         free(*estoque);
         *estoque = NULL;
